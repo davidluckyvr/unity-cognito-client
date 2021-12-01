@@ -10,7 +10,7 @@ public class LambdaManager : MonoBehaviour
    public Button mainMenuButton;
 
    private AuthenticationManager _authenticationManager;
-   private string _lambdaFunctionName = "YOUR_LAMBDA_FUNCTION_NAME";
+   private string _lambdaFunctionName = "cognito-auth-demo-1";
 
    public async void ExecuteLambda()
    {
@@ -29,7 +29,7 @@ public class LambdaManager : MonoBehaviour
 
       if (response.StatusCode == 200)
       {
-         Debug.Log("Successful lambda call");
+         Debug.Log("Successful lambda call" + response.ResponseMetadata);
 
          // demonstrate we can get the users ID for use in our game
          string userId = _authenticationManager.GetUsersId();

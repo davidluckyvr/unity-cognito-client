@@ -11,14 +11,18 @@ using System.Net;
 public class AuthenticationManager : MonoBehaviour
 {
    // the AWS region of where your services live
-   public static Amazon.RegionEndpoint Region = Amazon.RegionEndpoint.USEast1;
+   public static Amazon.RegionEndpoint Region = Amazon.RegionEndpoint.USEast2;
 
    // In production, should probably keep these in a config file
-   const string IdentityPool = "YOUR_IDENTITY_POOL_ID"; //insert your Cognito User Pool ID, found under General Settings
-   const string AppClientID = "YOUR_APP_CLIENT_ID"; //insert App client ID, found under App Client Settings
-   const string userPoolId = "YOUR_USER_POOL_ID";
+   //const string IdentityPool = "YOUR_IDENTITY_POOL_ID"; //insert your Cognito User Pool ID, found under General Settings
+   //const string AppClientID = "YOUR_APP_CLIENT_ID"; //insert App client ID, found under App Client Settings
+   //const string userPoolId = "YOUR_USER_POOL_ID";
 
-   private AmazonCognitoIdentityProviderClient _provider;
+    const string IdentityPool = "us-east-2:f0a37633-5b6d-4dba-b14f-e9af8c9d01c9"; //insert your Cognito User Pool ID, found under General Settings
+    const string AppClientID = "2mkgn63cpl16m5aef3fr5ltmpd"; //insert App client ID, found under App Client Settings
+    const string userPoolId = "us-east-2_EcwA0QhFR";
+
+    private AmazonCognitoIdentityProviderClient _provider;
    private CognitoAWSCredentials _cognitoAWSCredentials;
    private static string _userid = "";
    private CognitoUser _user;
@@ -98,7 +102,7 @@ public class AuthenticationManager : MonoBehaviour
 
    public async Task<bool> Login(string email, string password)
    {
-      // Debug.Log("Login: " + email + ", " + password);
+       Debug.Log("Login: " + email + ", " + password);
 
       CognitoUserPool userPool = new CognitoUserPool(userPoolId, AppClientID, _provider);
       CognitoUser user = new CognitoUser(email, AppClientID, userPool, _provider);
@@ -113,9 +117,9 @@ public class AuthenticationManager : MonoBehaviour
          AuthFlowResponse authFlowResponse = await user.StartWithSrpAuthAsync(authRequest).ConfigureAwait(false);
 
          _userid = await GetUserIdFromProvider(authFlowResponse.AuthenticationResult.AccessToken);
-         // Debug.Log("Users unique ID from cognito: " + _userid);
+          Debug.Log("Users unique ID from cognito: " + _userid);
 
-         UserSessionCache userSessionCache = new UserSessionCache(
+            UserSessionCache userSessionCache = new UserSessionCache(
             authFlowResponse.AuthenticationResult.IdToken,
             authFlowResponse.AuthenticationResult.AccessToken,
             authFlowResponse.AuthenticationResult.RefreshToken,
