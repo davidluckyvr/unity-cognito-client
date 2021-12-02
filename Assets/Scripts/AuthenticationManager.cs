@@ -24,9 +24,14 @@ public class AuthenticationManager : MonoBehaviour
 
 
     //PASSWORDLESS AUTH
+    //const string IdentityPool = "us-east-2:f0a37633-5b6d-4dba-b14f-e9af8c9d01c9"; //insert your Cognito User Pool ID, found under General Settings
+    //const string AppClientID = "6sflqugl8en25p1ujoaq3fimnr"; //insert App client ID, found under App Client Settings
+    //const string userPoolId = "us-east-2_jb5OLMPNl";
+
+    //PASSWORDLESS AUTH USERNAME
     const string IdentityPool = "us-east-2:f0a37633-5b6d-4dba-b14f-e9af8c9d01c9"; //insert your Cognito User Pool ID, found under General Settings
-    const string AppClientID = "6sflqugl8en25p1ujoaq3fimnr"; //insert App client ID, found under App Client Settings
-    const string userPoolId = "us-east-2_jb5OLMPNl";
+    const string AppClientID = "65c40n1g4o6au937aflpifb2ke"; //insert App client ID, found under App Client Settings
+    const string userPoolId = "us-east-2_tdKc75vhX";
 
     private AmazonCognitoIdentityProviderClient _provider;
    private CognitoAWSCredentials _cognitoAWSCredentials;
@@ -151,22 +156,22 @@ public class AuthenticationManager : MonoBehaviour
     //}
     #endregion
 
-    public async Task<bool> Login(string email, string password)
+    public async Task<bool> Login(string userName, string password)
     {
-        Debug.Log("Login: " + email + ", " + password);
+        Debug.Log("Login: " + userName + ", " + password);
 
         CognitoUserPool userPool = new CognitoUserPool(userPoolId, AppClientID, _provider);
-        CognitoUser user = new CognitoUser(email, AppClientID, userPool, _provider);
+        CognitoUser user = new CognitoUser(userName, AppClientID, userPool, _provider);
 
         InitiateCustomAuthRequest authRequest = new InitiateCustomAuthRequest()
         {
             AuthParameters = new Dictionary<string, string>()
             {
-                { "USERNAME","david.fu.df@gmail.com"}
+                { "USERNAME",userName}
             },
             ClientMetadata = new Dictionary<string, string>()
             {
-            
+                { "USERNAME",userName}
             }
         };
 
@@ -196,16 +201,18 @@ public class AuthenticationManager : MonoBehaviour
                         {
                             { "ANSWER","opensesame"},
                             //{ "USERNAME",  authResponse.ChallengeParameters["USERNAME"]}
-                            { "USERNAME", "userpooltester@gmail.com" }
+                            { "USERNAME", userName }
                         }
 
-
-
                     });
+
                     accessToken = authResponse.AuthenticationResult.AccessToken;
+                    Debug.Log("Access Token " + accessToken);
+                    Debug.Log("Refresh Token " + authResponse.AuthenticationResult.RefreshToken);
+                    Debug.Log(" Token " + authResponse.AuthenticationResult.IdToken);
                 } else
                 {
-                    Console.WriteLine("Unrecognized authentication challenge.");
+                    Debug.Log("Unrecognized authentication challenge.");
                     accessToken = "";
                     break;
                 }
@@ -213,11 +220,11 @@ public class AuthenticationManager : MonoBehaviour
 
             if (authResponse.AuthenticationResult != null)
             {
-                Console.WriteLine("User successfully authenticated.");
+                Debug.Log("User successfully authenticated.");
                 return true;
             } else
             {
-                Console.WriteLine("Error in authentication process.");
+                Debug.Log("Error in authentication process.");
                 return false;
             }
         }
@@ -237,26 +244,21 @@ public class AuthenticationManager : MonoBehaviour
         }
     }
 
-    public async Task<bool> Signup(string username, string email, string password)
+    public async Task<bool> Signup(string username, string password)
    {
-      // Debug.Log("SignUpRequest: " + username + ", " + email + ", " + password);
+       Debug.Log("SignUpRequest: " + username + ", " + ", " + password);
 
-      SignUpRequest signUpRequest = new SignUpRequest()
+        SignUpRequest signUpRequest = new SignUpRequest()
       {
          ClientId = AppClientID,
-         Username = email,
+         Username = username,
          Password = password
       };
 
       // must provide all attributes required by the User Pool that you configured
       List<AttributeType> attributes = new List<AttributeType>()
       {
-         new AttributeType(){
-            Name = "email", Value = email
-         },
-         new AttributeType(){
-            Name = "preferred_username", Value = username
-         }
+
       };
       signUpRequest.UserAttributes = attributes;
 

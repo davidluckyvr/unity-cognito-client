@@ -63,8 +63,8 @@ public class UIInputManager : MonoBehaviour
       _loading.SetActive(true);
         // Debug.Log("onLoginClicked: " + emailFieldLogin.text + ", " + passwordFieldLogin.text);
         //HARDCODED THE LOGIN VALUES
-        bool successfulLogin = await _authenticationManager.Login("userpooltester@gmail.com", "David!123123");
-        //bool successfulLogin = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
+        //bool successfulLogin = await _authenticationManager.Login("davidfu", "123123");
+        bool successfulLogin = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
       displayComponentsFromAuthStatus(successfulLogin);
    }
 
@@ -74,7 +74,7 @@ public class UIInputManager : MonoBehaviour
       _loading.SetActive(true);
 
       // Debug.Log("onSignupClicked: " + usernameField.text + ", " + emailField.text + ", " + passwordField.text);
-      bool successfulSignup = await _authenticationManager.Signup(usernameField.text, emailField.text, passwordField.text);
+      bool successfulSignup = await _authenticationManager.Signup(usernameField.text, passwordField.text);
 
       if (successfulSignup)
       {
