@@ -61,8 +61,10 @@ public class UIInputManager : MonoBehaviour
    {
       _unauthInterface.SetActive(false);
       _loading.SetActive(true);
-      // Debug.Log("onLoginClicked: " + emailFieldLogin.text + ", " + passwordFieldLogin.text);
-      bool successfulLogin = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
+        // Debug.Log("onLoginClicked: " + emailFieldLogin.text + ", " + passwordFieldLogin.text);
+        //HARDCODED THE LOGIN VALUES
+        bool successfulLogin = await _authenticationManager.Login("userpooltester@gmail.com", "David!123123");
+        //bool successfulLogin = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
       displayComponentsFromAuthStatus(successfulLogin);
    }
 
@@ -115,18 +117,18 @@ public class UIInputManager : MonoBehaviour
       _lambdaManager.ExecuteLambda();
    }
 
-   private async void RefreshToken()
-   {
-      bool successfulRefresh = await _authenticationManager.RefreshSession();
-      displayComponentsFromAuthStatus(successfulRefresh);
-   }
+   //private async void RefreshToken()
+   //{
+   //   bool successfulRefresh = await _authenticationManager.RefreshSession();
+   //   displayComponentsFromAuthStatus(successfulRefresh);
+   //}
 
    void Start()
    {
       Debug.Log("UIInputManager: Start");
       // check if user is already authenticated 
       // We perform the refresh here to keep our user's session alive so they don't have to keep logging in.
-      RefreshToken();
+      //RefreshToken();
 
       signupButton.onClick.AddListener(onSignupClicked);
       loginButton.onClick.AddListener(onLoginClicked);
@@ -185,7 +187,7 @@ public class UIInputManager : MonoBehaviour
       _confirmEmail = GameObject.Find("ConfirmEmail");
       _signupContainer = GameObject.Find("SignupContainer");
 
-      _unauthInterface.SetActive(false); // start as false so we don't just show the login screen during attempted token refresh
+      _unauthInterface.SetActive(true); // start as false so we don't just show the login screen during attempted token refresh
       _authInterface.SetActive(false);
       _welcome.SetActive(false);
       _confirmEmail.SetActive(false);
