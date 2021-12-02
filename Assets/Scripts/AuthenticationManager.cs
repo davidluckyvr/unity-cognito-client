@@ -199,11 +199,10 @@ public class AuthenticationManager : MonoBehaviour
                         SessionID = authResponse.SessionID,
                         ChallengeParameters = new Dictionary<string, string>()
                         {
-                            { "ANSWER","opensesame"},
+                            { "ANSWER","120"},
                             //{ "USERNAME",  authResponse.ChallengeParameters["USERNAME"]}
                             { "USERNAME", userName }
                         }
-
                     });
 
                     accessToken = authResponse.AuthenticationResult.AccessToken;
