@@ -156,8 +156,16 @@ public class AuthenticationManager : MonoBehaviour
     //}
     #endregion
 
-    public async Task<bool> Login(string userName, string password)
+    public async Task<string> Login(string userName, string password)
     {
+        //Signup is the only way to figure out if the
+        //string signUpErrorString = await Signup(userName, password);
+        //if (string.IsNullOrEmpty(signUpErrorString))
+        //{
+        //    //Signup successful
+        //}else if(signUpErrorString = "User already exists" || )
+
+
         Debug.Log("Login: " + userName + ", " + password);
 
         CognitoUserPool userPool = new CognitoUserPool(userPoolId, AppClientID, _provider);
@@ -169,9 +177,11 @@ public class AuthenticationManager : MonoBehaviour
             {
                 { "USERNAME",userName}
             },
+            //PRE-AUTH TRIGGER WON'T TRIGGER FOR CUSTOM AUTH. KNOWN BUG FOR AWS COGNITO. 
+            //WHEN AWS FIXES IT, WE CAN MOVE THE VERSION CHECK AND 
             ClientMetadata = new Dictionary<string, string>()
             {
-                { "USERNAME",userName}
+                { "validationData", ""}
             }
         };
 
@@ -201,7 +211,8 @@ public class AuthenticationManager : MonoBehaviour
                         {
                             { "ANSWER","120"},
                             //{ "USERNAME",  authResponse.ChallengeParameters["USERNAME"]}
-                            { "USERNAME", userName }
+                            { "USERNAME", userName },
+                            { "version", "INTERNAL_Villain" }
                         }
                     });
 
@@ -209,28 +220,24 @@ public class AuthenticationManager : MonoBehaviour
                     Debug.Log("Access Token " + accessToken);
                     Debug.Log("Refresh Token " + authResponse.AuthenticationResult.RefreshToken);
                     Debug.Log(" Token " + authResponse.AuthenticationResult.IdToken);
-                } else
-                {
-                    Debug.Log("Unrecognized authentication challenge.");
-                    accessToken = "";
-                    break;
                 }
             }
 
             if (authResponse.AuthenticationResult != null)
             {
-                Debug.Log("User successfully authenticated.");
-                return true;
+                //Debug.Log("User successfully authenticated.");
+                _user = user;
+                return "";
             } else
             {
-                Debug.Log("Error in authentication process.");
-                return false;
+                //Debug.Log("Error in authentication process.");
+                return "Error in authentication process.";
             }
         }
         catch (Exception e)
         {
-            Debug.Log("Login failed, exception: " + e + " " + e.StackTrace + " ");
-            return false;
+            //Debug.Log("Login failed, exception: " + e.Message + " " + e.StackTrace + " ");
+            return e.Message;
         }
     }
 
@@ -243,7 +250,7 @@ public class AuthenticationManager : MonoBehaviour
         }
     }
 
-    public async Task<bool> Signup(string username, string password)
+    public async Task<string> Signup(string username, string password)
    {
        Debug.Log("SignUpRequest: " + username + ", " + ", " + password);
 
@@ -265,12 +272,12 @@ public class AuthenticationManager : MonoBehaviour
       {
          SignUpResponse sighupResponse = await _provider.SignUpAsync(signUpRequest);
          Debug.Log("Sign up successful");
-         return true;
+            return "";
       }
       catch (Exception e)
       {
-         Debug.Log("Sign up failed, exception: " + e);
-         return false;
+         Debug.Log("Sign up failed, exception: " + e.Message);
+         return e.Message;
       }
    }
 

@@ -64,8 +64,19 @@ public class UIInputManager : MonoBehaviour
         // Debug.Log("onLoginClicked: " + emailFieldLogin.text + ", " + passwordFieldLogin.text);
         //HARDCODED THE LOGIN VALUES
         //bool successfulLogin = await _authenticationManager.Login("davidfu", "123123");
-        bool successfulLogin = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
-      displayComponentsFromAuthStatus(successfulLogin);
+        string loginErrorMsg = await _authenticationManager.Login(emailFieldLogin.text, passwordFieldLogin.text);
+        Debug.Log("Onclick " + (string.IsNullOrEmpty(loginErrorMsg) ? "Authentication Successful" : loginErrorMsg));
+
+        if (string.IsNullOrEmpty(loginErrorMsg){
+            displayComponentsFromAuthStatus(true);
+        } else
+        {
+            if(loginErrorMsg.Contains("user not found"))
+            {
+
+            }
+        }
+        
    }
 
    private async void onSignupClicked()
@@ -74,9 +85,9 @@ public class UIInputManager : MonoBehaviour
       _loading.SetActive(true);
 
       // Debug.Log("onSignupClicked: " + usernameField.text + ", " + emailField.text + ", " + passwordField.text);
-      bool successfulSignup = await _authenticationManager.Signup(usernameField.text, passwordField.text);
+      string signUpError = await _authenticationManager.Signup(usernameField.text, passwordField.text);
 
-      if (successfulSignup)
+      if (signUpError == "")
       {
          // here we re-enable the whole auth container but hide the sign up panel
          _signupContainer.SetActive(false);
